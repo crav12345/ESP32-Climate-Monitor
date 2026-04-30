@@ -1,8 +1,6 @@
 {
-  "C_Cpp.intelliSenseEngine": "default",
-  "idf.openOcdConfigs": [
-    "board/esp32s3-builtin.cfg"
-  ],
+  "C_Cpp.intelliSenseEngine": "disabled",
+  "idf.openOcdConfigs": ["board/esp32s3-builtin.cfg"],
   "idf.port": "detect",
   "idf.currentSetup": "/Users/chrisravosa/.espressif/v6.0/esp-idf",
   "idf.customExtraVars": {
@@ -12,6 +10,14 @@
   "clangd.arguments": [
     "--background-index",
     "--query-driver=**",
-    "--compile-commands-dir=/Users/chrisravosa/Documents/Projects/Firmware/climate-monitor/build"
-  ]
+    "--compile-commands-dir=/Users/chrisravosa/Documents/Projects/Firmware/climate/climate/build"
+  ],
+  "[c]": {
+    "editor.defaultFormatter": "ms-vscode.cpptools"
+  },
+  "[cpp]": {
+    "editor.defaultFormatter": "ms-vscode.cpptools"
+  },
+  "C_Cpp.clang_format_style": "file",
+  "editor.formatOnSave": true
 }
