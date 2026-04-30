@@ -5,7 +5,7 @@
 #include "esp_netif_ip_addr.h"
 #include "esp_log.h" // Log system
 #include "esp_event.h" // Event loop
-#include "freertos/FreeRTOS.h"
+#include "freertos/FreeRTOS.h" // IWYU pragma: keep
 #include "freertos/task.h"
 
 static const char *TAG = "app_wifi";
