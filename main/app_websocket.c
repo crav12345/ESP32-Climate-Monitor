@@ -1,6 +1,7 @@
 #include "app_websocket.h"
 #include "esp_websocket_client.h"
 #include "esp_log.h"
+#include <inttypes.h>
 
 static const char *TAG = "app_websocket";
 
@@ -8,6 +9,32 @@ static const char *TAG = "app_websocket";
 
 extern const uint8_t gts_root_r1_pem_start[] asm("_binary_gts_root_r1_pem_start");
 extern const uint8_t gts_root_r1_pem_end[] asm("_binary_gts_root_r1_pem_end");
+
+static void websocket_event_handler(
+    void *arg,
+    esp_event_base_t event_base,
+    int32_t event_id,
+    void *event_data
+) {
+    switch (event_id)
+    {
+        case WEBSOCKET_EVENT_CONNECTED:
+            ESP_LOGI(TAG, "WebSocket connected");
+            break;
+        case WEBSOCKET_EVENT_DISCONNECTED:
+            ESP_LOGW(TAG, "WebSocket disconnected");
+            break;
+        case WEBSOCKET_EVENT_DATA:
+            ESP_LOGI(TAG, "WebSocket data received");
+            break;
+        case WEBSOCKET_EVENT_ERROR:
+            ESP_LOGE(TAG, "WebSocket error");
+            break;
+        default:
+            ESP_LOGI(TAG, "Other WebSocket event: %" PRId32, event_id);
+            break;
+    }
+}
 
 void app_websocket_start(void) {
     esp_websocket_client_config_t websocket_cfg = {
@@ -22,6 +49,13 @@ void app_websocket_start(void) {
         ESP_LOGE(TAG, "Failed to create WebSocket client");
         return;
     }
+
+    ESP_ERROR_CHECK(esp_websocket_register_events(
+        client,
+        WEBSOCKET_EVENT_ANY,
+        websocket_event_handler,
+        NULL
+    ));
 
     ESP_ERROR_CHECK(esp_websocket_client_start(client));
 
