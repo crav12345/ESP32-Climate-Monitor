@@ -11,8 +11,6 @@
 static const char *TAG = "app_wifi";
 static int s_retry_count = 0;
 
-#define WIFI_SSID ""
-#define WIFI_PASS ""
 #define FAST_WIFI_RETRY_COUNT 10
 #define FAST_WIFI_RETRY_DELAY_MS 1000
 #define SLOW_WIFI_RETRY_DELAY_MS 30000
@@ -87,8 +85,8 @@ void app_wifi_start(void)
     // Tell wifi driver which router to conenct to.
     wifi_config_t wifi_config = {
         .sta = {
-            .ssid = WIFI_SSID,
-            .password = WIFI_PASS,
+            .ssid = CONFIG_WIFI_SSID,
+            .password = CONFIG_WIFI_PASSWORD,
         },
     };
     ESP_ERROR_CHECK(esp_wifi_set_config(WIFI_IF_STA, &wifi_config));

@@ -1,0 +1,15 @@
+menu "Climate Monitor Configuration"
+
+config WIFI_SSID
+    string "WiFi SSID"
+    default "my-wifi-name"
+    help
+        WiFi network name used by the ESP32.
+
+config WIFI_PASSWORD
+    string "WiFi Password"
+    default "my-password"
+    help
+        WiFi password used by the ESP32.
+
+endmenu
