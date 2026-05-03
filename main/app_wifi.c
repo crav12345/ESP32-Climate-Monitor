@@ -11,8 +11,8 @@
 static const char *TAG = "app_wifi";
 static int s_retry_count = 0;
 
-#define WIFI_SSID "The WiFi Monster"
-#define WIFI_PASS "WhoWasInParis"
+#define WIFI_SSID ""
+#define WIFI_PASS ""
 #define FAST_WIFI_RETRY_COUNT 10
 #define FAST_WIFI_RETRY_DELAY_MS 1000
 #define SLOW_WIFI_RETRY_DELAY_MS 30000
