@@ -1,5 +1,5 @@
 #include "app_wifi.h"
-
+#include "app_time_sync.h"
 #include "esp_wifi.h" // Wifi system.
 #include "esp_netif.h" // Network interface system.
 #include "esp_netif_ip_addr.h"
@@ -49,6 +49,7 @@ static void wifi_event_handler(
         ip_event_got_ip_t *event = (ip_event_got_ip_t *)event_data;
         s_retry_count = 0;
         ESP_LOGI(TAG, "WiFi connected. IP address: " IPSTR, IP2STR(&event->ip_info.ip));
+        app_time_sync();
         app_websocket_start();
     }
 }

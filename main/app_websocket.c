@@ -1,5 +1,5 @@
 #include "app_websocket.h"
-
+#include "esp_crt_bundle.h"
 #include "esp_websocket_client.h"
 #include "esp_log.h"
 
@@ -10,6 +10,7 @@ static const char *TAG = "app_websocket";
 void app_websocket_start(void) {
     esp_websocket_client_config_t websocket_cfg = {
         .uri = WEBSOCKET_URL,
+        .crt_bundle_attach = esp_crt_bundle_attach
     };
 
     esp_websocket_client_handle_t client =
