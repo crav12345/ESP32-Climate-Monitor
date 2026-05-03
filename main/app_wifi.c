@@ -7,6 +7,7 @@
 #include "esp_event.h" // Event loop
 #include "freertos/FreeRTOS.h" // IWYU pragma: keep
 #include "freertos/task.h"
+#include "app_websocket.h"
 
 static const char *TAG = "app_wifi";
 static int s_retry_count = 0;
@@ -48,6 +49,7 @@ static void wifi_event_handler(
         ip_event_got_ip_t *event = (ip_event_got_ip_t *)event_data;
         s_retry_count = 0;
         ESP_LOGI(TAG, "WiFi connected. IP address: " IPSTR, IP2STR(&event->ip_info.ip));
+        app_websocket_start();
     }
 }
 
