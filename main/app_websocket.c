@@ -25,7 +25,11 @@ static void websocket_event_handler(
             ESP_LOGW(TAG, "WebSocket disconnected");
             break;
         case WEBSOCKET_EVENT_DATA:
-            ESP_LOGI(TAG, "WebSocket data received");
+            esp_websocket_event_data_t *data =
+                (esp_websocket_event_data_t *)event_data;
+            ESP_LOGI(TAG, "WebSocket data received: %.*s",
+                data->data_len,
+                (char *)data->data_ptr);
             break;
         case WEBSOCKET_EVENT_ERROR:
             ESP_LOGE(TAG, "WebSocket error");
