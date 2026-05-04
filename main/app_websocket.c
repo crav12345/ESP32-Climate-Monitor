@@ -2,6 +2,9 @@
 #include "esp_websocket_client.h"
 #include "esp_log.h"
 #include <inttypes.h>
+#include "cJSON.h"
+#include <string.h>
+#include <stdlib.h>
 
 static const char *TAG = "app_websocket";
 
@@ -30,6 +33,37 @@ static void websocket_event_handler(
             ESP_LOGI(TAG, "WebSocket data received: %.*s",
                 data->data_len,
                 (char *)data->data_ptr);
+            char *json_str = strndup((char *)data->data_ptr, data->data_len);
+
+            if (json_str == NULL) {
+                ESP_LOGE(TAG, "Failed to allocate JSON string");
+                break;
+            }
+
+            cJSON *json = cJSON_Parse(json_str);
+
+            if (json == NULL) {
+                ESP_LOGE(TAG, "Failed to parse JSON");
+                free(json_str);
+                break;
+            }
+
+            cJSON *type = cJSON_GetObjectItem(json, "type");
+
+            if (!cJSON_IsString(type)) {
+                ESP_LOGW(TAG, "JSON message missing valid type");
+                cJSON_Delete(json);
+                free(json_str);
+                break;
+            }
+
+            ESP_LOGI(TAG, "JSON message type: %s", type->valuestring);
+
+            if (strcmp(type->valuestring, "setColor") == 0) {
+                ESP_LOGI(TAG, "Handling setColor command");
+            } else {
+                ESP_LOGW(TAG, "Unknown message type: %s", type->valuestring);
+            }
             break;
         case WEBSOCKET_EVENT_ERROR:
             ESP_LOGE(TAG, "WebSocket error");
