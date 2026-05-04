@@ -65,9 +65,25 @@ static void websocket_event_handler(
                 cJSON *color = cJSON_GetObjectItem(json, "color");
 
                 if (cJSON_IsString(color)) {
-                    app_led_set_color(color->valuestring);
+                    const char *color_str = color->valuestring;
+
+                    if (color_str[0] == '#' && strlen(color_str) == 7) {
+                        unsigned int hex;
+
+                        if (sscanf(color_str + 1, "%06x", &hex) == 1) {
+                            uint8_t r = (hex >> 16) & 0xFF;
+                            uint8_t g = (hex >> 8) & 0xFF;
+                            uint8_t b = hex & 0xFF;
+
+                            app_led_set_color(r, g, b);
+                        } else {
+                            ESP_LOGW(TAG, "Failed to parse hex color");
+                        }
+                    } else {
+                        ESP_LOGW(TAG, "Invalid hex color format");
+                    }
                 } else {
-                    ESP_LOGW(TAG, "setColor missing valid color");
+                    ESP_LOGW(TAG, "setColor missing valid color string");
                 }
             } else {
                 ESP_LOGW(TAG, "Unknown message type: %s", type->valuestring);
