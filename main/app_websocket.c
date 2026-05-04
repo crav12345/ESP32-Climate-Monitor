@@ -5,6 +5,7 @@
 #include "cJSON.h"
 #include <string.h>
 #include <stdlib.h>
+#include "app_led.h"
 
 static const char *TAG = "app_websocket";
 
@@ -61,9 +62,19 @@ static void websocket_event_handler(
 
             if (strcmp(type->valuestring, "setColor") == 0) {
                 ESP_LOGI(TAG, "Handling setColor command");
+                cJSON *color = cJSON_GetObjectItem(json, "color");
+
+                if (cJSON_IsString(color)) {
+                    app_led_set_color(color->valuestring);
+                } else {
+                    ESP_LOGW(TAG, "setColor missing valid color");
+                }
             } else {
                 ESP_LOGW(TAG, "Unknown message type: %s", type->valuestring);
             }
+
+            cJSON_Delete(json);
+            free(json_str);
             break;
         case WEBSOCKET_EVENT_ERROR:
             ESP_LOGE(TAG, "WebSocket error");
