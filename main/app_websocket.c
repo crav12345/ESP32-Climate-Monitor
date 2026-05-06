@@ -8,6 +8,7 @@
 #include "app_led.h"
 
 static const char *TAG = "app_websocket";
+static esp_websocket_client_handle_t s_websocket_client = NULL;
 
 #define WEBSOCKET_URL "wss://climate-monitor-server-397967553683.us-east1.run.app/"
 
@@ -107,22 +108,52 @@ void app_websocket_start(void) {
         .cert_pem = (const char *)gts_root_r1_pem_start,
     };
 
-    esp_websocket_client_handle_t client =
-        esp_websocket_client_init(&websocket_cfg);
+    s_websocket_client = esp_websocket_client_init(&websocket_cfg);
 
-    if (client == NULL) {
+    if (s_websocket_client == NULL) {
         ESP_LOGE(TAG, "Failed to create WebSocket client");
         return;
     }
 
     ESP_ERROR_CHECK(esp_websocket_register_events(
-        client,
+        s_websocket_client,
         WEBSOCKET_EVENT_ANY,
         websocket_event_handler,
         NULL
     ));
 
-    ESP_ERROR_CHECK(esp_websocket_client_start(client));
+    ESP_ERROR_CHECK(esp_websocket_client_start(s_websocket_client));
 
     ESP_LOGI(TAG, "WebSocket client started");
+}
+
+esp_err_t app_websocket_send_text(const char *message)
+{
+    if (message == NULL) {
+        return ESP_ERR_INVALID_ARG;
+    }
+
+    if (s_websocket_client == NULL) {
+        ESP_LOGW(TAG, "WebSocket client not initialized");
+        return ESP_ERR_INVALID_STATE;
+    }
+
+    if (!esp_websocket_client_is_connected(s_websocket_client)) {
+        ESP_LOGW(TAG, "WebSocket not connected");
+        return ESP_ERR_INVALID_STATE;
+    }
+
+    int result = esp_websocket_client_send_text(
+        s_websocket_client,
+        message,
+        strlen(message),
+        1000
+    );
+
+    if (result < 0) {
+        ESP_LOGE(TAG, "Failed to send WebSocket message");
+        return ESP_FAIL;
+    }
+
+    return ESP_OK;
 }
