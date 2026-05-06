@@ -4,6 +4,19 @@
 
 The repository is organized around firmware responsibilities rather than a single monolithic application. Internal module boundaries may change over time, but the overall goal stays the same: collect environmental telemetry from the device, publish it to a backend, and respond to remote commands for simple on-device feedback such as status lighting.
 
+## System Overview
+
+This project is part of a larger system:
+
+- **ESP32 Firmware (this repo)** → collects climate data and sends it to this server
+- **Server** → receives data and broadcasts updates  
+- **[ChrisRavosa.com](https://www.chrisravosa.com/)** → displays live climate data  
+
+### Related Repositories
+
+- **[crav12345/Climate-Monitor-Server](https://github.com/crav12345/Climate-Monitor-Server)**
+- **[crav12345/ChrisRavosa.com](https://github.com/crav12345/ChrisRavosa.com)**
+
 ## What This Project Does
 
 - Connects the device to a configured Wi-Fi network
